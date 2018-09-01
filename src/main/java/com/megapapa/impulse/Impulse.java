@@ -1,4 +1,4 @@
-package com.megapapa.impuls;
+package com.megapapa.impulse;
 
 import io.bootique.Bootique;
 
@@ -8,6 +8,7 @@ public class Impulse {
         Bootique
                 .app(args)
                 .autoLoadModules()
+                .module(new ImpulseModuleProvider())
                 .exec()
                 .exit();
     }
