@@ -10,6 +10,7 @@
     <name>Project management</name>
 
     <properties>
+        <main.class>com.megapapa.impulse.ImpulseApp</main.class>
         <bootique.version>0.25</bootique.version>
     </properties>
 

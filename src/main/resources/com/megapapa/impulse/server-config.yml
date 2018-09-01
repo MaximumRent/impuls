@@ -1,0 +1,4 @@
+jetty:
+  context: /
+  connectors:
+    - port: 10001
