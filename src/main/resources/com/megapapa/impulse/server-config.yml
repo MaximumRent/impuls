@@ -1,4 +1,4 @@
 jetty:
   context: /
   connectors:
-    - port: 10001
+    - port: 8080

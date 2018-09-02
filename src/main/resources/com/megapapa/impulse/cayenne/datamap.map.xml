@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/10/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/10/modelMap http://cayenne.apache.org/schema/10/modelMap.xsd"
+	 project-version="10">
+	<property name="defaultPackage" value="com.megapapa.impulse.entity.cayenne"/>
+	<db-entity name="individual_task" catalog="impulse_db">
+		<db-attribute name="description" type="LONGVARCHAR" length="16777215"/>
+		<db-attribute name="end_limit" type="TIMESTAMP" isMandatory="true" length="19"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="started_at" type="TIMESTAMP" isMandatory="true" length="19"/>
+		<db-attribute name="user_id" type="INTEGER" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="individual_task_config" catalog="impulse_db">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="individual_task_id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="notificated" type="TINYINT" isMandatory="true" length="3"/>
+	</db-entity>
+	<db-entity name="role" catalog="impulse_db">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="45"/>
+	</db-entity>
+	<db-entity name="role_permission" catalog="impulse_db">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true" length="10"/>
+		<db-attribute name="permission" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="role_id" type="INTEGER" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="user" catalog="impulse_db">
+		<db-attribute name="email" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="password_hash" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="password_salt" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="role_id" type="INTEGER" isMandatory="true" length="10"/>
+		<db-attribute name="username" type="VARCHAR" isMandatory="true" length="255"/>
+	</db-entity>
+	<obj-entity name="IndividualTask" className="com.megapapa.impulse.entity.cayenne.IndividualTask" dbEntityName="individual_task">
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="description"/>
+		<obj-attribute name="endLimit" type="java.time.LocalDateTime" db-attribute-path="end_limit"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="startedAt" type="java.time.LocalDateTime" db-attribute-path="started_at"/>
+	</obj-entity>
+	<obj-entity name="IndividualTaskConfig" className="com.megapapa.impulse.entity.cayenne.IndividualTaskConfig" dbEntityName="individual_task_config">
+		<obj-attribute name="notificated" type="short" db-attribute-path="notificated"/>
+	</obj-entity>
+	<obj-entity name="Role" className="com.megapapa.impulse.entity.cayenne.Role" dbEntityName="role">
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+	</obj-entity>
+	<obj-entity name="RolePermission" className="com.megapapa.impulse.entity.cayenne.RolePermission" dbEntityName="role_permission">
+		<obj-attribute name="permission" type="java.lang.String" db-attribute-path="permission"/>
+	</obj-entity>
+	<obj-entity name="User" className="com.megapapa.impulse.entity.cayenne.User" dbEntityName="user">
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="email"/>
+		<obj-attribute name="passwordHash" type="java.lang.String" db-attribute-path="password_hash"/>
+		<obj-attribute name="passwordSalt" type="java.lang.String" db-attribute-path="password_salt"/>
+		<obj-attribute name="username" type="java.lang.String" db-attribute-path="username"/>
+	</obj-entity>
+	<db-relationship name="individualTaskConfigs" source="individual_task" target="individual_task_config" toMany="true">
+		<db-attribute-pair source="id" target="individual_task_id"/>
+	</db-relationship>
+	<db-relationship name="user" source="individual_task" target="user">
+		<db-attribute-pair source="user_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="individualTask" source="individual_task_config" target="individual_task">
+		<db-attribute-pair source="individual_task_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="rolePermissions" source="role" target="role_permission" toMany="true">
+		<db-attribute-pair source="id" target="role_id"/>
+	</db-relationship>
+	<db-relationship name="users" source="role" target="user" toMany="true">
+		<db-attribute-pair source="id" target="role_id"/>
+	</db-relationship>
+	<db-relationship name="role" source="role_permission" target="role">
+		<db-attribute-pair source="role_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="individualTasks" source="user" target="individual_task" toMany="true">
+		<db-attribute-pair source="id" target="user_id"/>
+	</db-relationship>
+	<db-relationship name="role" source="user" target="role">
+		<db-attribute-pair source="role_id" target="id"/>
+	</db-relationship>
+	<obj-relationship name="individualTaskConfigs" source="IndividualTask" target="IndividualTaskConfig" deleteRule="Deny" db-relationship-path="individualTaskConfigs"/>
+	<obj-relationship name="user" source="IndividualTask" target="User" deleteRule="Nullify" db-relationship-path="user"/>
+	<obj-relationship name="individualTask" source="IndividualTaskConfig" target="IndividualTask" deleteRule="Nullify" db-relationship-path="individualTask"/>
+	<obj-relationship name="rolePermissions" source="Role" target="RolePermission" deleteRule="Deny" db-relationship-path="rolePermissions"/>
+	<obj-relationship name="users" source="Role" target="User" deleteRule="Deny" db-relationship-path="users"/>
+	<obj-relationship name="role" source="RolePermission" target="Role" deleteRule="Nullify" db-relationship-path="role"/>
+	<obj-relationship name="individualTasks" source="User" target="IndividualTask" deleteRule="Deny" db-relationship-path="individualTasks"/>
+	<obj-relationship name="role" source="User" target="Role" deleteRule="Nullify" db-relationship-path="role"/>
+</data-map>
