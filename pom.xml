@@ -25,6 +25,7 @@
         <main.class>com.megapapa.impulse.ImpulseApp</main.class>
         <bootique.version>0.25</bootique.version>
         <cayenne.version>4.1.M1</cayenne.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +53,14 @@
             <groupId>org.apache.cayenne</groupId>
             <artifactId>cayenne-server</artifactId>
             <version>${cayenne.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
