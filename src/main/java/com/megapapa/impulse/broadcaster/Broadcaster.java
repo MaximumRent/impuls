@@ -1,6 +1,6 @@
-package com.megapapa.impulse.translator;
+package com.megapapa.impulse.broadcaster;
 
-import com.megapapa.impulse.translator.exception.TranslationException;
+import com.megapapa.impulse.broadcaster.exception.TranslationException;
 import org.apache.cayenne.BaseDataObject;
 
 import java.lang.reflect.Field;
@@ -10,18 +10,18 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Retranslator {
+/**
+ * Class which provides logic about translation between cayenne-objects and DTO's.
+ */
+public class Broadcaster {
 
     private static final String GETTER_PREFIX = "get";
     private static final int FIELD_FIRST_LETTER_INDEX = 0;
 
-    public RetranslatorAccum startTranslation() {
-        RetranslatorAccum accum = new RetranslatorAccum();
-        return accum;
-    }
+    private BroadcastConfiguration config;
 
-    public RetranslatorAccum includeAll() {
-
+    public Broadcaster() {
+        config = new BroadcastConfiguration();
     }
 
     public Map<String, Object> translate(BaseDataObject cayenneObject) {
@@ -60,5 +60,27 @@ public class Retranslator {
             builder.append(fieldName.charAt(i));
         }
         return builder.toString();
+    }
+
+
+    // "Self configurable" methods
+    public Broadcaster maxDepth(int maxDepth) {
+        config.setMaxDepth(maxDepth);
+        return this;
+    }
+
+    public Broadcaster includeAll() {
+        config.includeAll(true);
+        return this;
+    }
+
+    public Broadcaster include(String fieldName) {
+        config.include(fieldName);
+        return this;
+    }
+
+    public Broadcaster exclude(String fieldName) {
+        config.exclude(fieldName);
+        return this;
     }
 }

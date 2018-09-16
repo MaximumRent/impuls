@@ -1,4 +1,4 @@
-package com.megapapa.impulse.translator;
+package com.megapapa.impulse.broadcaster;
 
 import com.megapapa.impulse.entity.cayenne.IndividualTask;
 import com.megapapa.impulse.entity.cayenne.Role;
@@ -22,11 +22,11 @@ public class FromCayenneToDTO {
         itask.setName("nuame");
         itask.setDescription("desc");
         itask.writePropertyDirectly("user", user);
-        Retranslator retranslator = new Retranslator();
-        retranslator.startTranslation()
+        Broadcaster broadcaster = new Broadcaster();
+        broadcaster.startTranslation()
 
 
-        Map<String, Object> jsonMap = new Retranslator().translate(itask);
+        Map<String, Object> jsonMap = new Broadcaster().translate(itask);
         jsonMap.forEach((key, value) -> {
             System.out.println(key + " : " + value);
         });

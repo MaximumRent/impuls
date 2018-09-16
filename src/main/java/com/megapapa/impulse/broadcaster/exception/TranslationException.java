@@ -1,4 +1,4 @@
-package com.megapapa.impulse.translator.exception;
+package com.megapapa.impulse.broadcaster.exception;
 
 public class TranslationException extends RuntimeException {
     public TranslationException() {
