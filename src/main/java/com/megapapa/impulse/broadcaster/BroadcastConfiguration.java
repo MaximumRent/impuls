@@ -5,12 +5,12 @@ import java.util.List;
 
 public class BroadcastConfiguration {
 
-    private static final int DEFAULT_MAX_DEPTH_VALUE = 1;
+    private static final int DEFAULT_MAX_DEPTH = 1;
 
     private boolean includeAll;
     private List<String> includedFields;
     private List<String> excludedFields;
-    private int maxDepth = DEFAULT_MAX_DEPTH_VALUE;
+    private int maxDepth = DEFAULT_MAX_DEPTH;
 
     public BroadcastConfiguration() {
         this.includedFields = new LinkedList<>();
@@ -60,6 +60,14 @@ public class BroadcastConfiguration {
             return false;
         }
         BroadcastConfiguration objConfig = ((BroadcastConfiguration) obj);
-        // TODO: Dodelat equals!!!
+        boolean isEqual = true;
+        for (String field : this.includedFields) {
+            isEqual &= objConfig.includedFields.contains(field);
+        }
+        for (String field : this.excludedFields) {
+            isEqual &= objConfig.excludedFields.contains(field);
+        }
+        isEqual &= this.includeAll == objConfig.includeAll;
+        return isEqual;
     }
 }

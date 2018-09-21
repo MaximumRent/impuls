@@ -23,10 +23,15 @@ public class FromCayenneToDTO {
         itask.setDescription("desc");
         itask.writePropertyDirectly("user", user);
         Broadcaster broadcaster = new Broadcaster();
-        broadcaster.startTranslation()
+        broadcaster
+                .include("name")
+                .include("description")
+                .include("endLimit")
+                .include("user")
+                .maxDepth(3);
+//        System.out.println(broadcaster.translate(itask));
 
-
-        Map<String, Object> jsonMap = new Broadcaster().translate(itask);
+        Map<String, Object> jsonMap = broadcaster.translate(itask, 0);
         jsonMap.forEach((key, value) -> {
             System.out.println(key + " : " + value);
         });

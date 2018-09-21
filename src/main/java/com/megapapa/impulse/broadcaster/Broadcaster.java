@@ -20,11 +20,12 @@ public class Broadcaster {
 
     private BroadcastConfiguration config;
 
+
     public Broadcaster() {
         config = new BroadcastConfiguration();
     }
 
-    public Map<String, Object> translate(BaseDataObject cayenneObject) {
+    public Map<String, Object> translate(BaseDataObject cayenneObject, int depth) {
         Class cayenneClass = cayenneObject.getClass().getSuperclass();
         Field[] fields = cayenneClass.getDeclaredFields();
         Map<String, Object> jsonMap = new HashMap<>();
@@ -32,17 +33,45 @@ public class Broadcaster {
             if (!Modifier.isFinal(field.getModifiers())) {
                 try {
                     String fieldName = field.getName();
-                    Object fieldValue = getValueFromField(fieldName, cayenneObject);
-                    if (fieldValue instanceof BaseDataObject) {
-                        fieldValue = translate((BaseDataObject) fieldValue);
+                    if (matched(fieldName)) {
+                        Object fieldValue = getFieldValue(fieldName, cayenneObject, depth);
+                        jsonMap.put(fieldName, fieldValue);
                     }
-                    jsonMap.put(fieldName, fieldValue);
                 } catch (Exception exception) {
                     throw new TranslationException(exception);
                 }
             }
         }
         return jsonMap;
+    }
+
+    private Object getFieldValue(String fieldName, BaseDataObject cayenneObject, int depth)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object fieldValue = getValueFromField(fieldName, cayenneObject);
+        if (depth >= config.getMaxDepth()) {
+            if (fieldValue instanceof BaseDataObject) {
+                fieldValue = translate((BaseDataObject) fieldValue, ++depth);
+            }
+        }
+        return fieldValue;
+    }
+
+    private boolean matched(String fieldName) {
+        boolean matched = false;
+        if (config.isIncludeAll()) {
+            return true;
+        }
+        for (String includeField : config.getIncludedFields()) {
+            if (fieldName.equals(includeField)) {
+                matched = true;
+            }
+        }
+        for (String excludeField : config.getExcludedFields()) {
+            if (fieldName.equals(excludeField)) {
+                matched = false;
+            }
+        }
+        return matched;
     }
 
     private Object getValueFromField(String fieldName, BaseDataObject cayenneObject) throws NoSuchMethodException,
@@ -70,7 +99,7 @@ public class Broadcaster {
     }
 
     public Broadcaster includeAll() {
-        config.includeAll(true);
+        config.includeAll();
         return this;
     }
 
