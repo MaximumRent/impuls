@@ -25,7 +25,7 @@ public class Broadcaster {
         config = new BroadcastConfiguration();
     }
 
-    public Map<String, Object> translate(BaseDataObject cayenneObject, int depth) {
+    public Map<String, Object> translate(BaseDataObject cayenneObject) {
         Class cayenneClass = cayenneObject.getClass().getSuperclass();
         Field[] fields = cayenneClass.getDeclaredFields();
         Map<String, Object> jsonMap = new HashMap<>();
@@ -34,7 +34,7 @@ public class Broadcaster {
                 try {
                     String fieldName = field.getName();
                     if (matched(fieldName)) {
-                        Object fieldValue = getFieldValue(fieldName, cayenneObject, depth);
+                        Object fieldValue = getFieldValue(fieldName, cayenneObject);
                         jsonMap.put(fieldName, fieldValue);
                     }
                 } catch (Exception exception) {
@@ -45,14 +45,15 @@ public class Broadcaster {
         return jsonMap;
     }
 
-    private Object getFieldValue(String fieldName, BaseDataObject cayenneObject, int depth)
+    private Object getFieldValue(String fieldName, BaseDataObject cayenneObject)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object fieldValue = getValueFromField(fieldName, cayenneObject);
-        if (depth >= config.getMaxDepth()) {
-            if (fieldValue instanceof BaseDataObject) {
-                fieldValue = translate((BaseDataObject) fieldValue, ++depth);
-            }
+        if (fieldValue instanceof BaseDataObject) {
+            fieldValue = translate((BaseDataObject) fieldValue);
         }
+//        if (depth >= config.getMaxDepth()) {
+//
+//        }
         return fieldValue;
     }
 
